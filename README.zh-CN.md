@@ -13,6 +13,7 @@
 | Skill | 说明 |
 |-------|------|
 | [ppt-markdown-workflow](./ppt-markdown-workflow) | 为技术分享创建并维护成对的 Markdown 文件——一份写幻灯片页面内容，一份写演讲讲稿——并自动校验页码、标题和素材引用的一致性。 |
+| [code-analysis-workflow](./code-analysis-workflow) | 系统性阅读源码并生成结构化技术分析文档——调用链图、架构对比表、数据结构层次图，适用于从陌生代码库提炼架构和设计决策。 |
 
 ## 使用方式
 

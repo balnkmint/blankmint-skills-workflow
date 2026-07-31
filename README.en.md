@@ -13,6 +13,7 @@ This repository curates reusable workflow skills for AI agents. Each skill is a 
 | Skill | Description |
 |-------|-------------|
 | [ppt-markdown-workflow](./ppt-markdown-workflow) | Draft and maintain paired Markdown files for technical presentations — one for slide content, one for speaker notes — with automated consistency checks. |
+| [code-analysis-workflow](./code-analysis-workflow) | Systematically read source code and generate structured technical analysis docs — call chains, architecture diagrams, data structures, and design decisions. |
 
 ## How to Use
 
