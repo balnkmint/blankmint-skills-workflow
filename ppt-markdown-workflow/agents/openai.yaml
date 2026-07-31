@@ -1,0 +1,4 @@
+interface:
+  display_name: "PPT Markdown双稿工作流"
+  short_description: "逐页维护PPT正文与演讲稿，并校验页码、标题和素材引用的一致性"
+  default_prompt: "Use $ppt-markdown-workflow to create or revise paired slide-content and speaker-notes Markdown files."

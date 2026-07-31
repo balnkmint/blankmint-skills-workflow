@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# Skill package archives
+*.skill
+
+# Draft / comparison files
+SKILL-skill-version.md
+
+# Temporary files
+ziaxTh0u
+*~
