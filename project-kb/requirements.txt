@@ -1,0 +1,27 @@
+# project-kb 依赖
+# Python 3.10+
+# 引擎不含 AI,不依赖任何大模型 SDK
+
+# === 存储层 ===
+# SQLite + FTS5 为 Python 标准库,无需额外包
+
+# === 代码解析 ===
+# tree-sitter 为可选(精确按函数切分);最小版用按行切分,无需安装
+# tree-sitter>=0.23.0
+# tree-sitter-languages>=1.10.0
+
+# === 文档解析 ===
+markitdown[all]>=0.0.1     # 统一解析 docx/pdf/pptx/xlsx/md/html→markdown
+
+# === 配置与工具 ===
+tomli>=2.0.0; python_version<"3.11"  # 读 toml(Python3.11+ 内置 tomllib)
+rich>=13.0.0              # CLI 美化输出
+
+# === Web 服务 ===
+fastapi>=0.115.0
+uvicorn>=0.30.0
+
+# === 向量化(可选,做语义检索时才需要) ===
+# 引擎不内置 embedding 模型。如需语义检索,由使用方自行接入
+# (本地小模型如 bge,或在线 embedding API)
+# sqlite-vec>=0.1.0

@@ -1,0 +1,172 @@
+# project-kb 技术栈识别表
+# 入库时 profiler.py 读取此表,靠构建文件和扩展名识别项目语言/技术栈
+# 扩展新语言只需在 [build_files] 或 [extensions] 下加一行
+
+# ============================================================
+# 构建文件 → 语言/技术栈映射(优先级最高)
+# 命中这些文件即认为项目含该语言
+# ============================================================
+[build_files."Cargo.toml"]
+language = "Rust"
+stack = ["cargo"]
+package_manager = "cargo"
+entry_hint = "src/main.rs"
+
+[build_files."package.json"]
+language = "JavaScript"
+stack = ["node", "npm"]
+package_manager = "npm"
+entry_hint = "index.js"
+
+[build_files."go.mod"]
+language = "Go"
+stack = ["go-modules"]
+package_manager = "go"
+entry_hint = "main.go"
+
+[build_files."pom.xml"]
+language = "Java"
+stack = ["maven", "jvm"]
+package_manager = "maven"
+entry_hint = "src/main/java"
+
+[build_files."build.gradle"]
+language = "Java"
+stack = ["gradle", "jvm"]
+package_manager = "gradle"
+entry_hint = "src/main/java"
+
+[build_files."build.gradle.kts"]
+language = "Kotlin"
+stack = ["gradle", "jvm"]
+package_manager = "gradle"
+
+[build_files."pyproject.toml"]
+language = "Python"
+stack = ["python"]
+package_manager = "pip"
+entry_hint = "src/__main__.py"
+
+[build_files."setup.py"]
+language = "Python"
+stack = ["python"]
+package_manager = "pip"
+
+[build_files."requirements.txt"]
+language = "Python"
+stack = ["python"]
+package_manager = "pip"
+
+[build_files."*.csproj"]
+language = "C#"
+stack = ["dotnet"]
+package_manager = "nuget"
+
+[build_files."Gemfile"]
+language = "Ruby"
+stack = ["ruby"]
+package_manager = "bundler"
+
+[build_files."mix.exs"]
+language = "Elixir"
+stack = ["elixir", "beam"]
+package_manager = "mix"
+
+[build_files."CMakeLists.txt"]
+language = "C/C++"
+stack = ["cmake"]
+package_manager = "cmake"
+
+[build_files."Makefile"]
+language = "C/C++"
+stack = ["make"]
+package_manager = "make"
+
+[build_files."build.zig"]
+language = "Zig"
+stack = ["zig"]
+
+[build_files."Package.swift"]
+language = "Swift"
+stack = ["swift"]
+
+# ============================================================
+# 文件扩展名 → 语言映射(用于语言占比统计)
+# ============================================================
+[extensions]
+".rs" = "Rust"
+".py" = "Python"
+".js" = "JavaScript"
+".jsx" = "JavaScript"
+".ts" = "TypeScript"
+".tsx" = "TypeScript"
+".go" = "Go"
+".java" = "Java"
+".kt" = "Kotlin"
+".kts" = "Kotlin"
+".c" = "C"
+".h" = "C"
+".cpp" = "C++"
+".cc" = "C++"
+".hpp" = "C++"
+".cs" = "C#"
+".rb" = "Ruby"
+".php" = "PHP"
+".swift" = "Swift"
+".m" = "Objective-C"
+".ex" = "Elixir"
+".exs" = "Elixir"
+".zig" = "Zig"
+".scala" = "Scala"
+".clj" = "Clojure"
+".hs" = "Haskell"
+".lua" = "Lua"
+".r" = "R"
+".sh" = "Shell"
+".bash" = "Shell"
+".sql" = "SQL"
+".vue" = "Vue"
+".svelte" = "Svelte"
+
+# ============================================================
+# 文档扩展名(走文档解析器,不进代码分块)
+# ============================================================
+[doc_extensions]
+".md" = "markdown"
+".markdown" = "markdown"
+".txt" = "text"
+".rst" = "rst"
+".docx" = "docx"
+".doc" = "doc"
+".pdf" = "pdf"
+".pptx" = "pptx"
+".xlsx" = "xlsx"
+".html" = "html"
+".htm" = "html"
+
+# ============================================================
+# 忽略目录(入库时不扫描)
+# ============================================================
+[ignore_dirs]
+"node_modules" = true
+"target" = true
+".git" = true
+"__pycache__" = true
+".venv" = true
+"venv" = true
+"dist" = true
+"build" = true
+".next" = true
+".cache" = true
+"vendor" = true
+
+# ============================================================
+# 忽略文件(入库时不解析)
+# ============================================================
+[ignore_files]
+".DS_Store" = true
+"*.lock" = true
+"package-lock.json" = true
+"yarn.lock" = true
+"*.min.js" = true
+"*.min.css" = true

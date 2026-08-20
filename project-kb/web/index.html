@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>project-kb · 项目知识库</title>
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --card: #ffffff;
+    --border: #e2e6eb;
+    --text: #1a2332;
+    --muted: #6b7785;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --tag: #eef1f5;
+    --code-bg: #f1f3f5;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+  /* Header */
+  header { background: var(--card); border-bottom: 1px solid var(--border); padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow); }
+  header h1 { font-size: 18px; font-weight: 600; }
+  header h1 span { color: var(--accent); }
+  #project-count { font-size: 13px; color: var(--muted); }
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; padding: 0 28px; background: var(--card); border-bottom: 1px solid var(--border); }
+  .tab { padding: 10px 18px; cursor: pointer; font-size: 14px; color: var(--muted); border-bottom: 2px solid transparent; transition: all .15s; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+  /* Panels */
+  .panel { display: none; max-width: 960px; margin: 0 auto; padding: 24px 28px; }
+  .panel.active { display: block; }
+  /* Search bar */
+  .search-bar { display: flex; gap: 8px; margin-bottom: 12px; }
+  .search-bar input { flex: 1; padding: 10px 14px; font-size: 14px; border: 1px solid var(--border); border-radius: 8px; outline: none; }
+  .search-bar input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+  .search-bar button { padding: 10px 20px; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; }
+  .search-bar button:hover { background: #1d4ed8; }
+  .mode-toggle { display: flex; gap: 6px; margin-bottom: 16px; }
+  .mode-toggle button { padding: 5px 14px; font-size: 13px; background: var(--tag); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; color: var(--muted); }
+  .mode-toggle button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  /* Result cards */
+  .result-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; box-shadow: var(--shadow); }
+  .result-card .meta { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .result-card .meta .proj { color: var(--accent); font-weight: 500; }
+  .result-card .symbol { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  .result-card pre { background: var(--code-bg); padding: 10px 14px; border-radius: 6px; font-size: 13px; overflow-x: auto; max-height: 240px; }
+  .result-card .score { float: right; font-size: 11px; color: var(--muted); }
+  /* SQL panel */
+  .sql-input { width: 100%; min-height: 80px; padding: 12px; font-family: "SF Mono", Consolas, monospace; font-size: 13px; border: 1px solid var(--border); border-radius: 8px; resize: vertical; }
+  .sql-actions { margin: 10px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 8px 12px; border: 1px solid var(--border); text-align: left; }
+  th { background: var(--tag); font-weight: 500; }
+  /* Project list */
+  .proj-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; box-shadow: var(--shadow); }
+  .proj-card h3 { font-size: 15px; margin-bottom: 6px; }
+  .proj-card .tags { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+  .tag { padding: 2px 10px; background: var(--tag); border-radius: 4px; font-size: 12px; color: var(--muted); }
+  .proj-card .summary { font-size: 13px; color: var(--muted); }
+  .expand-btn { float: right; padding: 4px 12px; font-size: 13px; cursor: pointer; background: var(--accent); color: #fff; border: none; border-radius: 6px; }
+  .expand-btn:hover { background: #1d4ed8; }
+  .proj-meta { font-size: 12px; color: var(--muted); margin: 6px 0; }
+  .proj-meta span { margin-right: 12px; }
+  .proj-chunks { margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 12px; }
+  .proj-chunks .result-card pre { max-height: 300px; }
+  .empty { text-align: center; padding: 40px; color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>project-<span>kb</span> · 项目知识库</h1>
+  <span id="project-count">加载中…</span>
+</header>
+
+<nav class="tabs">
+  <div class="tab active" data-tab="search">检索</div>
+  <div class="tab" data-tab="sql">结构化查询</div>
+  <div class="tab" data-tab="projects">项目列表</div>
+</nav>
+
+<!-- 检索面板 -->
+<div id="panel-search" class="panel active">
+  <div class="search-bar">
+    <input id="search-input" type="text" placeholder="搜索项目内容,如"虚拟化隔离""MIR 控制流图"…">
+    <button onclick="doSearch()">搜索</button>
+  </div>
+  <div class="mode-toggle">
+    <button class="active" data-mode="hybrid">混合检索</button>
+    <button data-mode="keyword">全文匹配</button>
+    <button data-mode="semantic">语义相近</button>
+  </div>
+  <div id="search-results"><div class="empty">输入关键词开始搜索</div></div>
+</div>
+
+<!-- 结构化查询面板 -->
+<div id="panel-sql" class="panel">
+  <p style="font-size:13px;color:var(--muted);margin-bottom:8px">直接写 SQL 查询项目元数据。例:<code>SELECT name,language,tech_stack FROM projects WHERE language='Rust'</code></p>
+  <textarea class="sql-input" id="sql-input" placeholder="SELECT name, language, tech_stack, summary FROM projects ORDER BY ingested_at DESC"></textarea>
+  <div class="sql-actions"><button class="search-bar" style="display:inline" onclick="doSql()">执行查询</button></div>
+  <div id="sql-results"></div>
+</div>
+
+<!-- 项目列表面板 -->
+<div id="panel-projects" class="panel">
+  <div id="project-list"><div class="empty">加载中…</div></div>
+</div>
+
+<script>
+const API = '';  // 同源,由 FastAPI 提供
+let searchMode = 'hybrid';
+
+// Tab 切换
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('panel-' + t.dataset.tab).classList.add('active');
+  });
+});
+// 检索模式切换
+document.querySelectorAll('.mode-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.mode-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    searchMode = b.dataset.mode;
+  });
+});
+
+// 检索
+async function doSearch() {
+  const q = document.getElementById('search-input').value.trim();
+  if (!q) return;
+  const box = document.getElementById('search-results');
+  box.innerHTML = '<div class="empty">检索中…</div>';
+  try {
+    const r = await fetch(`${API}/api/search?q=${encodeURIComponent(q)}&mode=${searchMode}&topk=8`);
+    const data = await r.json();
+    renderResults(data, box);
+  } catch(e) { box.innerHTML = `<div class="empty">查询失败: ${e.message}</div>`; }
+}
+function renderResults(data, box) {
+  // TODO: 后端实现后渲染结果卡片。骨架先放占位结构。
+  if (!data || !data.length) { box.innerHTML = '<div class="empty">无匹配结果</div>'; return; }
+  box.innerHTML = data.map(r => `
+    <div class="result-card">
+      <div class="meta"><span class="proj">${r.project_name||''}</span> · ${r.source_file||''} ${r.symbol?'· '+r.symbol:''}<span class="score">${r.score?r.score.toFixed(3):''}</span></div>
+      <pre>${(r.content||'').slice(0,500)}</pre>
+    </div>`).join('');
+}
+
+// 结构化查询
+async function doSql() {
+  const sql = document.getElementById('sql-input').value.trim();
+  if (!sql) return;
+  const box = document.getElementById('sql-results');
+  box.innerHTML = '<div class="empty">执行中…</div>';
+  try {
+    const r = await fetch(`${API}/api/sql?sql=${encodeURIComponent(sql)}`);
+    const data = await r.json();
+    renderTable(data, box);
+  } catch(e) { box.innerHTML = `<div class="empty">查询失败: ${e.message}</div>`; }
+}
+function renderTable(data, box) {
+  // TODO: 后端实现后渲染表格
+  if (!data || !data.length) { box.innerHTML = '<div class="empty">无结果</div>'; return; }
+  const cols = Object.keys(data[0]);
+  box.innerHTML = `<table><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr>${data.map(r=>`<tr>${cols.map(c=>`<td>${r[c]??''}</td>`).join('')}</tr>`).join('')}</table>`;
+}
+
+// 项目列表
+async function loadProjects() {
+  try {
+    const r = await fetch(`${API}/api/projects`);
+    const data = await r.json();
+    document.getElementById('project-count').textContent = `${data.length} 个项目`;
+    const box = document.getElementById('project-list');
+    if (!data.length) { box.innerHTML = '<div class="empty">还没有项目,用 ingest.py 入库吧</div>'; return; }
+    box.innerHTML = data.map(p => `
+      <div class="proj-card">
+        <h3>${escapeHtml(p.name||'未命名')} <button class="expand-btn" onclick="toggleChunks(${p.id})">查看全部内容</button></h3>
+        <div class="tags"><span class="tag">${escapeHtml(p.language||'未知')}</span>${(p.tech_stack||[]).map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>
+        <div class="proj-meta">
+          <span>📁 ${p.file_count||0} 文件</span><span>📝 ${p.line_count||0} 行</span>
+          ${(p.entry_files||[]).length?'<span>入口: '+escapeHtml(p.entry_files.join(', '))+'</span>':''}
+          ${(p.dependencies||[]).length?'<span>依赖: '+escapeHtml(p.dependencies.slice(0,8).join(', '))+'</span>':''}
+        </div>
+        ${p.summary?'<div class="summary">'+escapeHtml(p.summary)+'</div>':''}
+        <div class="proj-chunks" id="chunks-${p.id}" style="display:none"></div>
+      </div>`).join('');
+  } catch(e) {
+    document.getElementById('project-list').innerHTML = `<div class="empty">加载失败: ${e.message}</div>`;
+  }
+}
+
+// 展开项目全部内容块
+async function toggleChunks(pid) {
+  const box = document.getElementById(`chunks-${pid}`);
+  if (box.style.display !== 'none') { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  box.innerHTML = '<div class="empty">加载内容块…</div>';
+  try {
+    const r = await fetch(`${API}/api/project/${pid}/chunks`);
+    const chunks = await r.json();
+    if (!chunks.length) { box.innerHTML = '<div class="empty">无内容块</div>'; return; }
+    box.innerHTML = `<div class="empty">共 ${chunks.length} 个内容块</div>` + chunks.map(ch => `
+      <div class="result-card">
+        <div class="meta">${escapeHtml(ch.source_file||'')} ${ch.symbol?'· '+escapeHtml(ch.symbol):''} ${ch.language?'· '+escapeHtml(ch.language):''} ${ch.line_start?'· 行 '+ch.line_start+'-'+ch.line_end:''}</div>
+        <pre>${escapeHtml(ch.content||'')}</pre>
+      </div>`).join('');
+  } catch(e) {
+    box.innerHTML = `<div class="empty">加载失败: ${e.message}</div>`;
+  }
+}
+
+function escapeHtml(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+
+// 页面加载时拉项目列表
+loadProjects();
+</script>
+</body>
+</html>
