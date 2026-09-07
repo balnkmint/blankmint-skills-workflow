@@ -12,6 +12,7 @@
 
 | Skill | 说明 |
 |-------|------|
+| [offline-patch-workflow](./offline-patch-workflow/SKILL.md) | 本地分析并制作补丁，经用户传入堡垒机或无外网服务器应用、编译和验证，回传日志迭代；包含版本核对、离线依赖、正式分支迁移及无上下文交接模板。 |
 | [ppt-markdown-workflow](./ppt-markdown-workflow) | 为技术分享创建并维护成对的 Markdown 文件——一份写幻灯片页面内容，一份写演讲讲稿——并自动校验页码、标题和素材引用的一致性。 |
 | [code-analysis-workflow](./code-analysis-workflow) | 系统性阅读源码并生成结构化技术分析文档——调用链图、架构对比表、数据结构层次图，适用于从陌生代码库提炼架构和设计决策。 |
 | [project-kb](./project-kb) | 通用项目知识库——把任意项目目录放入后自动分析（探测语言/技术栈、解析代码与文档含 docx/pdf）入库成可检索数据库，支持 CLI 检索和 Web 查询界面，引擎不含 AI，适用于任何 AI Agent。 |

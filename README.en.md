@@ -12,6 +12,7 @@ This repository curates reusable workflow skills for AI agents. Each skill is a 
 
 | Skill | Description |
 |-------|-------------|
+| [offline-patch-workflow](./offline-patch-workflow/SKILL.md) | Analyze and prepare patches locally, transfer them through the user to an offline server, and iterate on returned build and test logs. Covers baseline checks, offline dependencies, production-branch transfers, and self-contained handoffs. |
 | [ppt-markdown-workflow](./ppt-markdown-workflow) | Draft and maintain paired Markdown files for technical presentations — one for slide content, one for speaker notes — with automated consistency checks. |
 | [code-analysis-workflow](./code-analysis-workflow) | Systematically read source code and generate structured technical analysis docs — call chains, architecture diagrams, data structures, and design decisions. |
 | [project-kb](./project-kb) | Universal project knowledge base — drop in any project directory to auto-analyze (detect language/tech stack, parse code and docs including docx/pdf) into a searchable database. CLI search + web UI. Engine contains no AI; works with any agent. |
