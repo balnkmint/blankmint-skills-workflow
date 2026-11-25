@@ -12,6 +12,7 @@ This repository curates reusable workflow skills for AI agents. Each skill is a 
 
 | Skill | Description |
 |-------|-------------|
+| [design-to-code-workflow](./design-to-code-workflow/SKILL.md) | Turn detailed designs into incremental implementation steps and track verification evidence, gaps, and handoffs in Markdown. |
 | [offline-patch-workflow](./offline-patch-workflow/SKILL.md) | Analyze and prepare patches locally, transfer them through the user to an offline server, and iterate on returned build and test logs. Covers baseline checks, offline dependencies, production-branch transfers, and self-contained handoffs. |
 | [ppt-markdown-workflow](./ppt-markdown-workflow) | Draft and maintain paired Markdown files for technical presentations — one for slide content, one for speaker notes — with automated consistency checks. |
 | [code-analysis-workflow](./code-analysis-workflow) | Systematically read source code and generate structured technical analysis docs — call chains, architecture diagrams, data structures, and design decisions. |
